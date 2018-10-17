@@ -1,15 +1,31 @@
+# TODO: Add backward testing after new-gradcheck in AutoGrad
 @testset "primitive" begin
 
     @testset "Multiply" begin
-        input_dim = 10; output_dim = 2
-        m = Multiply(input=input_dim, output=output_dim, atype=_test_atype)
+
+        m = Multiply(input=_INPUTdim, output=_OUTPUTdim, atype=_test_atype)
         N = rand(1:10)
-        x = _test_atype(zeros(input_dim, N))
-        y1 = m(x)
-        y2 = _test_atype(zeros(output_dim, N))
-        @test y1 == y2
+
+        x1   = _test_atype(zeros(_INPUTdim, N))
+        y1_1 = m(x1)
+        y1_2 = _test_atype(zeros(_OUTPUTdim, N))
+        
+        x2   = _test_atype(randn(_INPUTdim, N))
+        y2_1 = m(x2)
+        y2_2 = m.w * x2
+
+        @test y1_1 == y1_2
+        @test y2_1 == y2_2
     end
 
+    @testset "Embed" begin
+        x1 = rand(1:_INPUTdim, 5)
+        m  = Embed(input=_INPUTdim, output=_OUTPUTdim, atype=_test_atype)
+        y1 = m(x1)
+        y2 = hcat([m.w[:,i] for i in x1]...)
+
+        @test y1 == y2
+    end
     
 end
 

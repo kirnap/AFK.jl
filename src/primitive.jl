@@ -2,6 +2,7 @@
     Multiply(input=inputDimension, output=outputDimension; winit=xavier, o...)
 
 Matrix multiplication layer with a matrix initialized from `winit` keyword argument.
+    (m::Multiply)(x) = m.w * x
 
 Input:  InputDimension by BatchSize `x` matrix where Batchsize ∈ {1, 2,.... N}
 
@@ -26,6 +27,19 @@ end
 
 
 """
+    Embed(input=inputDimension, output=outputDimension; winit=xavier, o...)
+
+Lookup layer to encode sparse one-hot vector into dense continous vector.
+    (m::Embed)(x) = m.w[:, x]
+
+Input:  An integer array containing 1 locations of one-hot vectors
+
+Output: Input-indexed columns of layer's matrix (m.w)
+
+# Keywords
+* `input=inputDimension`   : One-hot vector's dimension
+* `output=outputDimension` : Dense vector's dimension
+* `winit=xaiver`           : distribution for weight initialization
 
 """
 Embed = Multiply
