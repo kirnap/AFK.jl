@@ -5,7 +5,7 @@ using Knet
 Parameter = Knet.param
 
 include("core.jl")
-include("primitive.jl"); export Multiply, Embed
+include("primitive.jl"); export Multiply, Embed, BatchMul, Linear
 
 
 end # module
