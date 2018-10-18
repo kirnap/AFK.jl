@@ -3,6 +3,6 @@ using Knet
 
 Parameter = Knet.param
 
-export relu, sigm, invx, elu, selu  # activation
-export @diff, grad, value, update!  # gradient
-export KnetArray                    # datatype
+export @diff, grad, value, update!, params  # gradient
+export relu, sigm, invx, elu, selu          # activation
+export KnetArray                            # datatype
