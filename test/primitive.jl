@@ -56,7 +56,18 @@
         y2_2 = _test_atype(ones(_OUTPUTdim, 1))
         @test y1_2 == y2_2
     end
-    
+
+    @testset "Dense" begin
+        m = Dense(input=_INPUTdim, output=_OUTPUTdim, atype=_test_atype, binit=ones, winit=randn)
+        x1 = _test_atype(zeros(_INPUTdim, 1))
+        y1 = m(x1)
+        y2 = _test_atype(ones(_OUTPUTdim, 1))
+        @test y1 == y2
+
+        m = Dense(input=_INPUTdim, output=_OUTPUTdim, atype=_test_atype, binit=ones, winit=randn, activation=relu)
+        x1 = _test_atype(zeros(_INPUTdim, 1))
+        y1 = m(x1)
+        y2 = _test_atype(ones(_OUTPUTdim, 1))
+        @test y1 == y2
+    end
 end
-
-

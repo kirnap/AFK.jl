@@ -86,7 +86,7 @@ Linear layer applying usual linear transformation `w * x .+ b`.
 
 Input:  inputDimension by BatchSize `x` matrix where Batchsize ∈ {1, 2,.... N}
 
-Output: outputDimension by BatchSize Batchsize ∈ {1, 2,.... N}
+Output: outputDimension by BatchSize where Batchsize ∈ {1, 2,.... N}
 
 # Keywords
 * `input=inputDimension`   : Input tensor's  1st dimension
@@ -95,8 +95,8 @@ Output: outputDimension by BatchSize Batchsize ∈ {1, 2,.... N}
 * `binit=zeros`            : Distribution for bias initialization
 
 """
-struct Linear
-    w::Multiply
+struct Linear <: Layer
+    m::Multiply
     b # bias
 end
 
@@ -106,4 +106,38 @@ function Linear(;input::Int, output::Int, winit=xavier, binit=zeros, o...)
     return Linear(w, b)
 end
 
-(m::Linear)(x) = m.w(x) .+ m.b
+(l::Linear)(x) = l.m(x) .+ l.b
+
+"""
+    Dense(;input=inputDimension, output=outputDimension, winit=xavier, binit=zeros, activation=relu, o...)
+Dense layer applying non-linear function, e.g. relu, on top of linear layer. If activation is not provided, Linear transformation applied
+
+Input:  inputDimension by BatchSize `x` matrix where Batchsize ∈ {1, 2,.... N}
+
+Output: outputDimension by Batchsize where Batchsize ∈ {1, 2,.... N}
+
+# Keywords
+* `input=inputDimension`   : Input tensor's  1st dimension
+* `output=outputDimension` : Output tensor's 1st dimension
+* `winit=xaiver`           : Distribution for weight initialization
+* `binit=zeros`            : Distribution for bias initialization
+* `activation=relu`        : Activation function applied after linear transformation, if nothing Linear layer initialized
+"""
+struct Dense <: Layer
+    l::Linear
+    activate # activation
+end
+
+function Dense(;input::Int, output::Int, activation=nothing, winit=xavier, binit=zeros, o...)
+    l = Linear(;input=input, output=output, winit=winit, binit=binit, o...)
+    if activation == nothing
+        return l
+    end
+    activate = activation
+    return Dense(l, activate)
+end
+
+(d::Dense)(x) = d.activate.(d.l(x))
+
+
+# TODO: Add dropout layer
